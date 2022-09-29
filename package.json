@@ -1,0 +1,19 @@
+{
+  "name": "jira-clone",
+  "version": "1.0.0",
+  "description": "A bug tracker application to emulate the functionality of Jira, built with React, Node and TypeScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sumairq/jira-clone.git"
+  },
+  "author": "Sumair Qaisar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sumairq/jira-clone/issues"
+  },
+  "homepage": "https://github.com/sumairq/jira-clone#readme"
+}
