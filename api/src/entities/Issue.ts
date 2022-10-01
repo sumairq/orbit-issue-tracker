@@ -46,6 +46,12 @@ import {
   
     @Column({ type: 'integer', nullable: true })
     estimate: number | null;
+
+    @Column({ type: 'integer', nullable: true })
+    timeSpent: number | null;
+  
+    @Column({ type: 'integer', nullable: true })
+    timeRemaining: number | null;
   
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
