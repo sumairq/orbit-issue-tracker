@@ -1,4 +1,5 @@
 import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
+
 import { Project, User, Issue, Comment } from 'entities';
 import { EntityNotFoundError, BadUserInputError } from 'errors';
 import { generateErrors } from 'utils/validation';
@@ -19,16 +20,20 @@ export const findEntityOrThrow = async <T extends EntityConstructor>(
   }
   return instance;
 };
+
 export const validateAndSaveEntity = async <T extends EntityInstance>(instance: T): Promise<T> => {
   const Constructor = entities[instance.constructor.name];
+
   if ('validations' in Constructor) {
     const errorFields = generateErrors(instance, Constructor.validations);
+
     if (Object.keys(errorFields).length > 0) {
       throw new BadUserInputError({ fields: errorFields });
     }
   }
   return instance.save() as Promise<T>;
 };
+
 export const createEntity = async <T extends EntityConstructor>(
   Constructor: T,
   input: Partial<InstanceType<T>>,
@@ -36,6 +41,7 @@ export const createEntity = async <T extends EntityConstructor>(
   const instance = Constructor.create(input);
   return validateAndSaveEntity(instance as InstanceType<T>);
 };
+
 export const updateEntity = async <T extends EntityConstructor>(
   Constructor: T,
   id: number | string,
@@ -45,6 +51,7 @@ export const updateEntity = async <T extends EntityConstructor>(
   Object.assign(instance, input);
   return validateAndSaveEntity(instance);
 };
+
 export const deleteEntity = async <T extends EntityConstructor>(
   Constructor: T,
   id: number | string,

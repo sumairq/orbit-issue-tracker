@@ -1,17 +1,15 @@
 import faker from 'faker';
-import { sample, random } from 'lodash';
+import { sample } from 'lodash';
 
-import Issue from 'entities/Issue';
-import { IssueType, IssueStatus, IssuePriority } from 'constants/issues';
+import Project from 'entities/Project';
+import { ProjectCategory } from 'constants/projects';
 
-const generateIssue = (data: Partial<Issue> = {}): Partial<Issue> => ({
-  title: faker.company.catchPhrase(),
-  type: sample(Object.values(IssueType)),
-  status: sample(Object.values(IssueStatus)),
-  priority: sample(Object.values(IssuePriority)),
+const generateProject = (data: Partial<Project> = {}): Partial<Project> => ({
+  name: faker.company.companyName(),
+  url: faker.internet.url(),
   description: faker.lorem.paragraph(),
-  estimate: random(1, 40),
+  category: sample(Object.values(ProjectCategory)),
   ...data,
 });
 
-export default generateIssue;
+export default generateProject;

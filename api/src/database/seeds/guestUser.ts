@@ -92,7 +92,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
 
 const seedComments = (issue: Issue, user: User): Promise<Comment> =>
   createEntity(Comment, {
-    body: "example of a seed comment!",
+    body: "Be nice to each other! Don't be mean to each other!",
     issue,
     user,
   });

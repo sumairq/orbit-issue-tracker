@@ -1,19 +1,20 @@
 {
-  "name": "jira-clone",
+  "name": "jira_clone",
   "version": "1.0.0",
-  "description": "A bug tracker application to emulate the functionality of Jira, built with React, Node and TypeScript.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sumairq/jira-clone.git"
-  },
   "author": "Sumair Qaisar",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sumairq/jira-clone/issues"
+  "scripts": {
+    "pre-commit:api": "cd api && npm run pre-commit",
+    "pre-commit:client": "cd client && npm run pre-commit",
+    "pre-commit": "npm run pre-commit:api && npm run pre-commit:client",
+    "install-deps": "npm install && cd api && npm install && cd ../client && npm install"
   },
-  "homepage": "https://github.com/sumairq/jira-clone#readme"
+  "devDependencies": {
+    "husky": "^3.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run pre-commit"
+    }
+  }
 }
