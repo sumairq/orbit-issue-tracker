@@ -61,7 +61,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
-        API_PORT: JSON.stringify('3001'),
+        API_URL: JSON.stringify('http://jira-api.sumair.dev'),
       },
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
