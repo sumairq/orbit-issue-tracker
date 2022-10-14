@@ -9,6 +9,7 @@ import { ScrollOverlay, ClickableOverlay, StyledModal, CloseIcon } from './Style
 
 const propTypes = {
   className: PropTypes.string,
+  testid: PropTypes.string,
   variant: PropTypes.oneOf(['center', 'aside']),
   width: PropTypes.number,
   withCloseIcon: PropTypes.bool,
@@ -20,6 +21,7 @@ const propTypes = {
 
 const defaultProps = {
   className: undefined,
+  testid: 'modal',
   variant: 'center',
   width: 600,
   withCloseIcon: true,
@@ -30,6 +32,7 @@ const defaultProps = {
 
 const Modal = ({
   className,
+  testid,
   variant,
   width,
   withCloseIcon,
@@ -55,7 +58,14 @@ const Modal = ({
 
   useOnOutsideClick($modalRef, isOpen, closeModal, $clickableOverlayRef);
   useOnEscapeKeyDown(isOpen, closeModal);
-  useEffect(setBodyScrollLock, [isOpen]);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'visible';
+    };
+  }, [isOpen]);
 
   return (
     <>
@@ -63,9 +73,15 @@ const Modal = ({
 
       {isOpen &&
         ReactDOM.createPortal(
-          <ScrollOverlay data-jira-modal="true">
+          <ScrollOverlay>
             <ClickableOverlay variant={variant} ref={$clickableOverlayRef}>
-              <StyledModal className={className} variant={variant} width={width} ref={$modalRef}>
+              <StyledModal
+                className={className}
+                variant={variant}
+                width={width}
+                data-testid={testid}
+                ref={$modalRef}
+              >
                 {withCloseIcon && <CloseIcon type="close" variant={variant} onClick={closeModal} />}
                 {renderContent({ close: closeModal })}
               </StyledModal>
@@ -78,11 +94,6 @@ const Modal = ({
 };
 
 const $root = document.getElementById('root');
-
-const setBodyScrollLock = () => {
-  const areAnyModalsOpen = !!document.querySelector('[data-jira-modal]');
-  document.body.style.overflow = areAnyModalsOpen ? 'hidden' : 'visible';
-};
 
 Modal.propTypes = propTypes;
 Modal.defaultProps = defaultProps;

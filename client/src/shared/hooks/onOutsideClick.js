@@ -4,7 +4,7 @@ import useDeepCompareMemoize from 'shared/hooks/deepCompareMemoize';
 
 const useOnOutsideClick = (
   $ignoredElementRefs,
-  shouldListen,
+  isListening,
   onOutsideClick,
   $listeningElementRef,
 ) => {
@@ -17,28 +17,27 @@ const useOnOutsideClick = (
     };
 
     const handleMouseUp = event => {
-      const isAnyIgnoredElementParentOfTarget = $ignoredElementRefsMemoized.some(
+      const isAnyIgnoredElementAncestorOfTarget = $ignoredElementRefsMemoized.some(
         $elementRef =>
           $elementRef.current.contains($mouseDownTargetRef.current) ||
           $elementRef.current.contains(event.target),
       );
-      if (event.button === 0 && !isAnyIgnoredElementParentOfTarget) {
+      if (event.button === 0 && !isAnyIgnoredElementAncestorOfTarget) {
         onOutsideClick();
       }
     };
 
     const $listeningElement = ($listeningElementRef || {}).current || document;
 
-    if (shouldListen) {
+    if (isListening) {
       $listeningElement.addEventListener('mousedown', handleMouseDown);
       $listeningElement.addEventListener('mouseup', handleMouseUp);
     }
-
     return () => {
       $listeningElement.removeEventListener('mousedown', handleMouseDown);
       $listeningElement.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [$ignoredElementRefsMemoized, $listeningElementRef, shouldListen, onOutsideClick]);
+  }, [$ignoredElementRefsMemoized, $listeningElementRef, isListening, onOutsideClick]);
 };
 
 export default useOnOutsideClick;
