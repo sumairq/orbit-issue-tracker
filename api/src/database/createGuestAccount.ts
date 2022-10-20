@@ -6,19 +6,19 @@ import { createEntity } from 'utils/typeorm';
 const seedUsers = (): Promise<User[]> => {
   const users = [
     createEntity(User, {
-      email: 'rick@jira.guest',
-      name: 'Pickle Rick',
-      avatarUrl: 'https://i.ibb.co/7JM1P2r/picke-rick.jpg',
+      email: 'brian@jira.guest',
+      name: 'Brian Devoe',
+      avatarUrl: 'https://i.ibb.co/f1YqwPK/alex-suprun-ZHv-M3-XIOHo-E-unsplash.jpg',
     }),
     createEntity(User, {
-      email: 'yoda@jira.guest',
-      name: 'Baby Yoda',
-      avatarUrl: 'https://i.ibb.co/6n0hLML/baby-yoda.jpg',
+      email: 'sara@jira.guest',
+      name: 'Sara Willams',
+      avatarUrl: 'https://i.ibb.co/4jZy7PN/christopher-campbell-r-DEOVt-E7v-Os-unsplash-1.jpg',
     }),
     createEntity(User, {
-      email: 'gaben@jira.guest',
-      name: 'Lord Gaben',
-      avatarUrl: 'https://i.ibb.co/6RJ5hq6/gaben.jpg',
+      email: 'john@jira.guest',
+      name: 'John Kaylan',
+      avatarUrl: 'https://i.ibb.co/ZT5VBNK/may-gauthier-0-J9l9x-Ry-MSo-unsplash.jpg',
     }),
   ];
   return Promise.all(users);
@@ -26,7 +26,7 @@ const seedUsers = (): Promise<User[]> => {
 
 const seedProject = (users: User[]): Promise<Project> =>
   createEntity(Project, {
-    name: 'singularity 1.0',
+    name: 'Advanced Employee Management System',
     url: 'https://www.atlassian.com/software/jira',
     description:
       'Plan, track, and manage your agile and software development projects in Jira. Customize your workflow, collaborate, and release great software.',
