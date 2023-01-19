@@ -32,7 +32,7 @@ export class BadUserInputError extends CustomError {
 }
 
 export class InvalidTokenError extends CustomError {
-  constructor(message = 'Authentication token is invalid.') {
+  constructor(message = 'Authentication token is invalid LEARNING ABOUT ERRORS.') {
     super(message, 'INVALID_TOKEN', 401);
   }
 }

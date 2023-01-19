@@ -6,12 +6,13 @@ import { User } from 'entities';
 
 export const authenticateUser = catchErrors(async (req, _res, next) => {
   const token = getAuthTokenFromRequest(req);
+  console.log('The absense of bearer', token);
   if (!token) {
-    throw new InvalidTokenError('Authentication token not found.');
+    throw new InvalidTokenError('Authentication token not found because token is not present.');
   }
   const userId = verifyToken(token).sub;
   if (!userId) {
-    throw new InvalidTokenError('Authentication token is invalid.');
+    throw new InvalidTokenError('Authentication token is invalid as the userId is not present.');
   }
   const user = await User.findOne({ where: { id: userId } });
   if (!user) {
