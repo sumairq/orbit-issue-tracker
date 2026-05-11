@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 type ErrorData = { [key: string]: any };
 
 export class CustomError extends Error {

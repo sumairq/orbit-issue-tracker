@@ -8,11 +8,11 @@ export const create = catchErrors(async (req, res) => {
 });
 
 export const update = catchErrors(async (req, res) => {
-  const comment = await updateEntity(Comment, req.params.commentId, req.body);
+  const comment = await updateEntity(Comment, req.params.commentId as string, req.body);
   res.respond({ comment });
 });
 
 export const remove = catchErrors(async (req, res) => {
-  const comment = await deleteEntity(Comment, req.params.commentId);
+  const comment = await deleteEntity(Comment, req.params.commentId as string);
   res.respond({ comment });
 });

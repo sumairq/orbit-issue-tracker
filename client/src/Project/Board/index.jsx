@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, useRouteMatch, useHistory } from 'react-router-dom';
+import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
 
 import useMergeState from 'shared/hooks/mergeState';
 import { Breadcrumbs, Modal } from 'shared/components';
@@ -23,10 +23,32 @@ const defaultFilters = {
   recent: false,
 };
 
-const ProjectBoard = ({ project, fetchProject, updateLocalProjectIssues }) => {
-  const match = useRouteMatch();
-  const history = useHistory();
+const IssueDetailsRoute = ({ project, fetchProject, updateLocalProjectIssues }) => {
+  const { issueId } = useParams();
+  const navigate = useNavigate();
+  return (
+    <Modal
+      isOpen
+      testid="modal:issue-details"
+      width={1040}
+      withCloseIcon={false}
+      onClose={() => navigate('/project/board')}
+      renderContent={modal => (
+        <IssueDetails
+          issueId={issueId}
+          projectUsers={project.users}
+          fetchProject={fetchProject}
+          updateLocalProjectIssues={updateLocalProjectIssues}
+          modalClose={modal.close}
+        />
+      )}
+    />
+  );
+};
 
+IssueDetailsRoute.propTypes = propTypes;
+
+const ProjectBoard = ({ project, fetchProject, updateLocalProjectIssues }) => {
   const [filters, mergeFilters] = useMergeState(defaultFilters);
 
   return (
@@ -44,27 +66,18 @@ const ProjectBoard = ({ project, fetchProject, updateLocalProjectIssues }) => {
         filters={filters}
         updateLocalProjectIssues={updateLocalProjectIssues}
       />
-      <Route
-        path={`${match.path}/issues/:issueId`}
-        render={routeProps => (
-          <Modal
-            isOpen
-            testid="modal:issue-details"
-            width={1040}
-            withCloseIcon={false}
-            onClose={() => history.push(match.url)}
-            renderContent={modal => (
-              <IssueDetails
-                issueId={routeProps.match.params.issueId}
-                projectUsers={project.users}
-                fetchProject={fetchProject}
-                updateLocalProjectIssues={updateLocalProjectIssues}
-                modalClose={modal.close}
-              />
-            )}
-          />
-        )}
-      />
+      <Routes>
+        <Route
+          path="issues/:issueId"
+          element={
+            <IssueDetailsRoute
+              project={project}
+              fetchProject={fetchProject}
+              updateLocalProjectIssues={updateLocalProjectIssues}
+            />
+          }
+        />
+      </Routes>
     </>
   );
 };

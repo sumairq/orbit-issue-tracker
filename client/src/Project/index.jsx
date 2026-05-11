@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Redirect, useRouteMatch, useHistory } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import useApi from 'shared/hooks/api';
 import { updateArrayItemById } from 'shared/utils/javascript';
@@ -15,8 +15,8 @@ import ProjectSettings from './ProjectSettings';
 import { ProjectPage } from './Styles';
 
 const Project = () => {
-  const match = useRouteMatch();
-  const history = useHistory();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const issueSearchModalHelpers = createQueryParamModalHelpers('issue-search');
   const issueCreateModalHelpers = createQueryParamModalHelpers('issue-create');
@@ -36,6 +36,8 @@ const Project = () => {
       },
     }));
   };
+
+  const isAtProjectRoot = location.pathname === '/project' || location.pathname === '/project/';
 
   return (
     <ProjectPage>
@@ -68,30 +70,31 @@ const Project = () => {
             <IssueCreate
               project={project}
               fetchProject={fetchProject}
-              onCreate={() => history.push(`${match.url}/board`)}
+              onCreate={() => navigate('/project/board')}
               modalClose={modal.close}
             />
           )}
         />
       )}
 
-      <Route
-        path={`${match.path}/board`}
-        render={() => (
-          <Board
-            project={project}
-            fetchProject={fetchProject}
-            updateLocalProjectIssues={updateLocalProjectIssues}
-          />
-        )}
-      />
+      <Routes>
+        <Route
+          path="board/*"
+          element={
+            <Board
+              project={project}
+              fetchProject={fetchProject}
+              updateLocalProjectIssues={updateLocalProjectIssues}
+            />
+          }
+        />
+        <Route
+          path="settings"
+          element={<ProjectSettings project={project} fetchProject={fetchProject} />}
+        />
+      </Routes>
 
-      <Route
-        path={`${match.path}/settings`}
-        render={() => <ProjectSettings project={project} fetchProject={fetchProject} />}
-      />
-
-      {match.isExact && <Redirect to={`${match.url}/board`} />}
+      {isAtProjectRoot && <Navigate to="/project/board" replace />}
     </ProjectPage>
   );
 };

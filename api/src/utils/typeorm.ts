@@ -30,7 +30,7 @@ export const createEntity = async <T extends EntityConstructor>(
   Constructor: T,
   input: Partial<InstanceType<T>>,
 ): Promise<InstanceType<T>> => {
-  const instance = Constructor.create(input);
+  const instance = (Constructor as typeof Project).create(input as Partial<Project>);
   return validateAndSaveEntity(instance as InstanceType<T>);
 };
 export const updateEntity = async <T extends EntityConstructor>(

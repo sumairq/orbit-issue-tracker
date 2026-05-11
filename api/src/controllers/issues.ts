@@ -22,7 +22,7 @@ export const getProjectIssues = catchErrors(async (req, res) => {
 
 export const getIssueWithUsersAndComments = catchErrors(async (req, res) => {
   const issue = await findEntityOrThrow(Issue, {
-    where: { id: req.params.issueId },
+    where: { id: req.params.issueId as string },
     relations: ['users', 'comments', 'comments.user'],
   });
   res.respond({ issue });
@@ -35,17 +35,17 @@ export const create = catchErrors(async (req, res) => {
 });
 
 export const update = catchErrors(async (req, res) => {
-  const issue = await updateEntity(Issue, req.params.issueId, req.body);
+  const issue = await updateEntity(Issue, req.params.issueId as string, req.body);
   res.respond({ issue });
 });
 
 export const remove = catchErrors(async (req, res) => {
-  const issue = await deleteEntity(Issue, req.params.issueId);
+  const issue = await deleteEntity(Issue, req.params.issueId as string);
   res.respond({ issue });
 });
 
 const calculateListPosition = async ({ projectId, status }: Issue): Promise<number> => {
-  const issues = await Issue.find({ select: { id: projectId, status } });
+  const issues = await Issue.find({ where: { projectId, status } });
 
   const listPositions = issues.map(({ listPosition }) => listPosition);
 

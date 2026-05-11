@@ -1,20 +1,20 @@
 import React from 'react';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { unstable_HistoryRouter as HistoryRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import history from 'browserHistory';
 import Project from 'Project';
 import Authenticate from 'Auth/Authenticate';
 import PageError from 'shared/components/PageError';
 
-const Routes = () => (
-  <Router history={history}>
-    <Switch>
-      <Redirect exact from="/" to="/project" />
-      <Route path="/authenticate" component={Authenticate} />
-      <Route path="/project" component={Project} />
-      <Route component={PageError} />
-    </Switch>
-  </Router>
+const AppRoutes = () => (
+  <HistoryRouter history={history}>
+    <Routes>
+      <Route path="/" element={<Navigate to="/project" replace />} />
+      <Route path="/authenticate" element={<Authenticate />} />
+      <Route path="/project/*" element={<Project />} />
+      <Route path="*" element={<PageError />} />
+    </Routes>
+  </HistoryRouter>
 );
 
-export default Routes;
+export default AppRoutes;

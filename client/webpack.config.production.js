@@ -9,8 +9,10 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: '[name]-[hash].js',
+    filename: '[name]-[contenthash].js',
+    assetModuleFilename: '[name]-[contenthash][ext]',
     publicPath: '/',
+    clean: true,
   },
   module: {
     rules: [
@@ -31,27 +33,18 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: { name: '[name]-[hash].[ext]', limit: 10000 },
-          },
-        ],
+        type: 'asset',
+        parser: { dataUrlCondition: { maxSize: 10000 } },
       },
       {
         test: /\.(woff2?|eot|ttf|otf)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: { name: '[name]-[hash].[ext]' },
-          },
-        ],
+        type: 'asset/resource',
       },
     ],
   },
   resolve: {
     modules: [path.join(__dirname, 'src'), 'node_modules'],
-    extensions: ['*', '.js', '.jsx', '.css'],
+    extensions: ['.js', '.jsx'],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -59,11 +52,9 @@ module.exports = {
       favicon: path.join(__dirname, 'src/favicon.png'),
     }),
     new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-        API_URL: JSON.stringify('http://api.sumair.ml:3000'),
-      },
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.API_URL': JSON.stringify('http://api.sumair.ml:3000'),
     }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
   ],
 };
