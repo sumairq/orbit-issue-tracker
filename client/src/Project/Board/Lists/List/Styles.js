@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { color, font, mixin } from 'shared/utils/styles';
+import { color, font, mixin, radius } from 'shared/utils/styles';
 
 export const List = styled.div`
   display: flex;
@@ -8,8 +8,8 @@ export const List = styled.div`
   margin: 0 5px;
   min-height: 400px;
   width: 25%;
-  border-radius: 3px;
-  background: ${color.backgroundLightest};
+  border-radius: ${radius.xl};
+  background: ${color.backgroundLight};
 `;
 
 export const Title = styled.div`

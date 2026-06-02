@@ -12,6 +12,8 @@ export const attachPublicRoutes = (app: any): void => {
   }
 
   app.post('/authentication/guest', authentication.createGuestAccount);
+  app.post('/authentication/register', authentication.register);
+  app.post('/authentication/login', authentication.login);
 };
 
 export const attachPrivateRoutes = (app: any): void => {
@@ -27,6 +29,10 @@ export const attachPrivateRoutes = (app: any): void => {
 
   app.get('/project', projects.getProjectWithUsersAndIssues);
   app.put('/project', projects.update);
+  app.post('/project/switch', projects.switchBoard);
+  app.get('/projects', projects.list);
+  app.post('/projects', projects.create);
 
   app.get('/currentUser', users.getCurrentUser);
+  app.put('/currentUser', users.updateCurrentUser);
 };

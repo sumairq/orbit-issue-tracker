@@ -17,8 +17,8 @@ const AboutTooltip = tooltipProps => (
         </FeedbackImageCont>
 
         <FeedbackParagraph>
-          This simplified Jira clone is built with React on the front-end and Node/TypeScript on the
-          back-end.
+          Orbit is a lightweight issue &amp; project tracker built with React on the front-end and
+          Node/TypeScript on the back-end.
         </FeedbackParagraph>
 
         <FeedbackParagraph>

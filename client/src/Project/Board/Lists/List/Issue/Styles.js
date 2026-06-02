@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { color, font, mixin } from 'shared/utils/styles';
+import { color, font, mixin, radius, shadow } from 'shared/utils/styles';
 import { Avatar } from 'shared/components';
 
 export const IssueLink = styled(Link)`
@@ -11,10 +11,11 @@ export const IssueLink = styled(Link)`
 
 export const Issue = styled.div`
   padding: 10px;
-  border-radius: 3px;
+  border-radius: ${radius.lg};
   background: #fff;
-  box-shadow: 0px 1px 2px 0px rgba(9, 30, 66, 0.25);
-  transition: background 0.1s;
+  border: 1px solid ${color.borderLightest};
+  box-shadow: ${shadow.sm};
+  transition: background 0.1s, box-shadow 0.1s;
   ${mixin.clickable}
   @media (max-width: 1100px) {
     padding: 10px 8px;
@@ -26,7 +27,7 @@ export const Issue = styled.div`
     props.isBeingDragged &&
     css`
       transform: rotate(3deg);
-      box-shadow: 5px 10px 30px 0px rgba(9, 30, 66, 0.15);
+      box-shadow: ${shadow.lg};
     `}
 `;
 

@@ -11,6 +11,7 @@ export default createGlobalStyle`
 
   body {
     color: ${color.textDarkest};
+    background: ${color.backgroundLightest};
     -webkit-tap-highlight-color: transparent;
     line-height: 1.2;
     ${font.size(16)}
@@ -104,6 +105,19 @@ export default createGlobalStyle`
 
   html {
     touch-action: manipulation;
+  }
+
+  body.dark-mode {
+    background: #0F1020;
+    color: #E8EAF6;
+
+    /* Invert surfaces for dark mode */
+    --dm-bg: #0F1020;
+    --dm-surface: #1A1B2E;
+    --dm-surface-raised: #222340;
+    --dm-border: #2D2F50;
+    --dm-text: #E8EAF6;
+    --dm-text-muted: #9B9EC9;
   }
 
   ${mixin.placeholderColor(color.textLight)}

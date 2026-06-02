@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { color, font } from 'shared/utils/styles';
+import { color, font, radius, shadow } from 'shared/utils/styles';
 
 export const StyledTextarea = styled.div`
   display: inline-block;
@@ -9,8 +9,8 @@ export const StyledTextarea = styled.div`
     overflow-y: hidden;
     width: 100%;
     padding: 8px 12px 9px;
-    border-radius: 3px;
-    border: 1px solid ${color.borderLightest};
+    border-radius: ${radius.lg};
+    border: 1px solid ${color.borderLight};
     color: ${color.textDarkest};
     background: ${color.backgroundLightest};
     ${font.regular}
@@ -18,7 +18,7 @@ export const StyledTextarea = styled.div`
     &:focus {
       background: #fff;
       border: 1px solid ${color.borderInputFocus};
-      box-shadow: 0 0 0 1px ${color.borderInputFocus};
+      box-shadow: ${shadow.focus};
     }
     ${props =>
       props.invalid &&

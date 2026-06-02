@@ -3,43 +3,53 @@ import Color from 'color';
 
 import { IssueType, IssueStatus, IssuePriority } from 'shared/constants/issues';
 
+/**
+ * Orbit design tokens — single source of truth.
+ *
+ * Direction "Orbit Indigo": indigo-600 brand, violet accent, cool slate
+ * neutrals. Replaces the previous Atlassian-derived palette. Every key from
+ * the original theme is preserved (only revalued) so existing styled-components
+ * keep working; new scales (spacing/radius/shadow) are added below.
+ */
 export const color = {
-  primary: '#0052cc', // Blue
-  success: '#0B875B', // green
-  danger: '#E13C3C', // red
-  warning: '#F89C1C', // orange
-  secondary: '#F4F5F7', // light grey
+  primary: '#4F46E5', // indigo-600 (brand)
+  primaryDark: '#4338CA', // indigo-700 (hover/pressed)
+  accent: '#7C3AED', // violet-600
+  success: '#16A34A', // green-600
+  danger: '#DC2626', // red-600
+  warning: '#D97706', // amber-600
+  secondary: '#F1F5F9', // slate-100 (subtle neutral fill)
 
-  textDarkest: '#172b4d',
-  textDark: '#42526E',
-  textMedium: '#5E6C84',
-  textLight: '#8993a4',
-  textLink: '#0052cc',
+  textDarkest: '#0F172A', // slate-900
+  textDark: '#334155', // slate-700
+  textMedium: '#64748B', // slate-500
+  textLight: '#94A3B8', // slate-400
+  textLink: '#4F46E5', // indigo-600
 
-  backgroundDarkPrimary: '#0747A6',
-  backgroundMedium: '#dfe1e6',
-  backgroundLight: '#ebecf0',
-  backgroundLightest: '#F4F5F7',
-  backgroundLightPrimary: '#D2E5FE',
-  backgroundLightSuccess: '#E4FCEF',
+  backgroundDarkPrimary: '#1E1B4B', // deep indigo (left nav rail / brand surfaces)
+  backgroundMedium: '#E2E8F0', // slate-200
+  backgroundLight: '#F1F5F9', // slate-100
+  backgroundLightest: '#F8FAFC', // slate-50 (app background)
+  backgroundLightPrimary: '#E0E7FF', // indigo-100 (selected / hover brand tint)
+  backgroundLightSuccess: '#DCFCE7', // green-100
 
-  borderLightest: '#dfe1e6',
-  borderLight: '#C1C7D0',
-  borderInputFocus: '#4c9aff',
+  borderLightest: '#E2E8F0', // slate-200
+  borderLight: '#CBD5E1', // slate-300
+  borderInputFocus: '#6366F1', // indigo-500 (focus ring)
 };
 
 export const issueTypeColors = {
-  [IssueType.TASK]: '#4FADE6', // blue
-  [IssueType.BUG]: '#E44D42', // red
-  [IssueType.STORY]: '#65BA43', // green
+  [IssueType.TASK]: '#6366F1', // indigo-500
+  [IssueType.BUG]: '#EF4444', // red-500
+  [IssueType.STORY]: '#22C55E', // green-500
 };
 
 export const issuePriorityColors = {
-  [IssuePriority.HIGHEST]: '#CD1317', // red
-  [IssuePriority.HIGH]: '#E9494A', // orange
-  [IssuePriority.MEDIUM]: '#E97F33', // orange
-  [IssuePriority.LOW]: '#2D8738', // green
-  [IssuePriority.LOWEST]: '#57A55A', // green
+  [IssuePriority.HIGHEST]: '#DC2626', // red-600
+  [IssuePriority.HIGH]: '#EA580C', // orange-600
+  [IssuePriority.MEDIUM]: '#D97706', // amber-600
+  [IssuePriority.LOW]: '#16A34A', // green-600
+  [IssuePriority.LOWEST]: '#22C55E', // green-500
 };
 
 export const issueStatusColors = {
@@ -62,17 +72,48 @@ export const sizes = {
   minViewportWidth: 1000,
 };
 
+// 4px-based spacing scale (px strings, ready to drop into template literals).
+export const spacing = {
+  xs: '4px',
+  sm: '8px',
+  md: '12px',
+  lg: '16px',
+  xl: '24px',
+  xxl: '32px',
+};
+
+// Border-radius scale. Cards/inputs/buttons default to `lg` for a modern feel;
+// small chips/tags use `sm`/`md`; avatars/pills use `pill`.
+export const radius = {
+  sm: '4px',
+  md: '6px',
+  lg: '8px',
+  xl: '12px',
+  pill: '999px',
+};
+
+// Layered, cool-neutral shadows (replaces the old Atlassian navy tint).
+export const shadow = {
+  xs: '0 1px 2px rgba(16, 24, 40, 0.06)',
+  sm: '0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06)',
+  md: '0 4px 8px -2px rgba(16, 24, 40, 0.1), 0 2px 4px -2px rgba(16, 24, 40, 0.06)',
+  lg: '0 12px 16px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03)',
+  focus: '0 0 0 3px rgba(79, 70, 229, 0.35)', // indigo focus ring
+};
+
 export const zIndexValues = {
   modal: 1000,
   dropdown: 101,
   navLeft: 100,
 };
 
+const fontStack = '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+
 export const font = {
-  regular: 'font-family: "CircularStdBook"; font-weight: normal;',
-  medium: 'font-family: "CircularStdMedium"; font-weight: normal;',
-  bold: 'font-family: "CircularStdBold"; font-weight: normal;',
-  black: 'font-family: "CircularStdBlack"; font-weight: normal;',
+  regular: `font-family: ${fontStack}; font-weight: 400;`,
+  medium: `font-family: ${fontStack}; font-weight: 500;`,
+  bold: `font-family: ${fontStack}; font-weight: 600;`,
+  black: `font-family: ${fontStack}; font-weight: 800;`,
   size: size => `font-size: ${size}px;`,
 };
 
@@ -90,10 +131,10 @@ export const mixin = {
       .alpha(opacity)
       .string(),
   boxShadowMedium: css`
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: ${shadow.lg};
   `,
   boxShadowDropdown: css`
-    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.31) 0px 0px 1px;
+    box-shadow: ${shadow.md};
   `,
   truncateText: css`
     overflow: hidden;

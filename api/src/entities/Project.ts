@@ -6,6 +6,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 import is from 'utils/validation';
@@ -44,7 +46,11 @@ class Project extends BaseEntity {
   @OneToMany(() => Issue, (issue) => issue.project)
   issues: Issue[];
 
-  @OneToMany(() => User, (user) => user.project)
+  // Membership / assignee pool. A board can have many users and a user can
+  // belong to many boards. `cascade` lets the seeders persist memberships when
+  // a Project is created with a `users` array.
+  @ManyToMany(() => User, (user) => user.projects, { cascade: true })
+  @JoinTable()
   users: User[];
 }
 

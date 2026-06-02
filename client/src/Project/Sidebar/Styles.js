@@ -74,6 +74,52 @@ export const LinkText = styled.div`
   ${font.size(14.7)};
 `;
 
+export const SwitcherHeading = styled.div`
+  padding: 0 12px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: ${color.textMedium};
+  ${font.bold}
+  ${font.size(11.5)}
+`;
+
+export const BoardItem = styled.button`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: 3px;
+  color: ${color.textDark};
+  ${mixin.clickable}
+  ${font.size(14.7)}
+  &:hover {
+    background: ${color.backgroundLight};
+  }
+  i {
+    margin-right: 13px;
+    font-size: 18px;
+  }
+  ${props =>
+    props.isActive &&
+    `
+      color: ${color.primary};
+      background: ${color.backgroundLight};
+      ${font.medium}
+      i { color: ${color.primary}; }
+    `}
+`;
+
+export const BoardItemText = styled.span`
+  padding-top: 2px;
+  ${mixin.truncateText}
+`;
+
+export const CreateBoardItem = styled(BoardItem)`
+  color: ${color.textMedium};
+`;
+
 export const NotImplemented = styled.div`
   display: inline-block;
   position: absolute;

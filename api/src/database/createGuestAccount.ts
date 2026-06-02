@@ -193,6 +193,15 @@ const seedComments = (issues: Issue[], users: User[]): Promise<Comment[]> => {
 const createGuestAccount = async (): Promise<User> => {
   const users = await seedUsers();
   const project = await seedProject(users);
+  // Membership is persisted via the Project.users ManyToMany cascade above.
+  // Also point each seeded user at this board as their active board so that
+  // GET /project returns it after the guest logs in.
+  await Promise.all(
+    users.map((user) => {
+      user.project = project;
+      return user.save();
+    }),
+  );
   const issues = await seedIssues(project);
   await seedComments(issues, project.users);
   return users[2];

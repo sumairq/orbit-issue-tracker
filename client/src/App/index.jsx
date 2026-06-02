@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { DarkModeProvider } from 'shared/context/DarkMode';
 import NormalizeStyles from './NormalizeStyles';
 import BaseStyles from './BaseStyles';
 import Toast from './Toast';
@@ -11,12 +12,12 @@ import Routes from './Routes';
 import './fontStyles.css';
 
 const App = () => (
-  <>
+  <DarkModeProvider>
     <NormalizeStyles />
     <BaseStyles />
     <Toast />
     <Routes />
-  </>
+  </DarkModeProvider>
 );
 
 export default App;

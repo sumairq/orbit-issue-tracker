@@ -33,6 +33,9 @@ class User extends BaseEntity {
   @Column('varchar', { length: 2000 })
   avatarUrl: string;
 
+  @Column('varchar', { nullable: true, select: false })
+  password: string | null;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
@@ -45,11 +48,17 @@ class User extends BaseEntity {
   @ManyToMany(() => Issue, (issue) => issue.users)
   issues: Issue[];
 
-  @ManyToOne(() => Project, (project) => project.users)
+  // Active board the user is currently viewing. Null for a brand-new account
+  // (drives the onboarding empty state).
+  @ManyToOne(() => Project)
   project: Project;
 
   @RelationId((user: User) => user.project)
   projectId: number;
+
+  // All boards this user is a member of (inverse of Project.users).
+  @ManyToMany(() => Project, (project) => project.users)
+  projects: Project[];
 }
 
 export default User;

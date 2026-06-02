@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { color, font } from 'shared/utils/styles';
+import { color, font, radius, shadow } from 'shared/utils/styles';
 import Icon from 'shared/components/Icon';
 
 export const StyledInput = styled.div`
@@ -13,9 +13,9 @@ export const StyledInput = styled.div`
 export const InputElement = styled.input`
   height: 100%;
   width: 100%;
-  padding: 0 7px;
-  border-radius: 3px;
-  border: 1px solid ${color.borderLightest};
+  padding: 0 10px;
+  border-radius: ${radius.lg};
+  border: 1px solid ${color.borderLight};
   color: ${color.textDarkest};
   background: ${color.backgroundLightest};
   transition: background 0.1s;
@@ -28,7 +28,7 @@ export const InputElement = styled.input`
   &:focus {
     background: #fff;
     border: 1px solid ${color.borderInputFocus};
-    box-shadow: 0 0 0 1px ${color.borderInputFocus};
+    box-shadow: ${shadow.focus};
   }
   ${props =>
     props.invalid &&

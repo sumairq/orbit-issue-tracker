@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { color, mixin, zIndexValues } from 'shared/utils/styles';
+import { color, mixin, radius, shadow, zIndexValues } from 'shared/utils/styles';
 import Icon from 'shared/components/Icon';
 
 export const ScrollOverlay = styled.div`
@@ -15,7 +15,7 @@ export const ScrollOverlay = styled.div`
 
 export const ClickableOverlay = styled.div`
   min-height: 100%;
-  background: rgba(9, 30, 66, 0.54);
+  background: rgba(15, 23, 42, 0.55);
   ${props => clickOverlayStyles[props.variant]}
 `;
 
@@ -41,13 +41,13 @@ const modalStyles = {
   center: css`
     max-width: ${props => props.width}px;
     vertical-align: middle;
-    border-radius: 3px;
+    border-radius: ${radius.xl};
     ${mixin.boxShadowMedium}
   `,
   aside: css`
     min-height: 100vh;
     max-width: ${props => props.width}px;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: ${shadow.lg};
   `,
 };
 

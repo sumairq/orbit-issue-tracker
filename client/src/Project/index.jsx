@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import useApi from 'shared/hooks/api';
+import toast from 'shared/utils/toast';
 import { updateArrayItemById } from 'shared/utils/javascript';
 import { createQueryParamModalHelpers } from 'shared/utils/queryParamModal';
 import { PageLoader, PageError, Modal } from 'shared/components';
@@ -12,6 +13,9 @@ import Board from './Board';
 import IssueSearch from './IssueSearch';
 import IssueCreate from './IssueCreate';
 import ProjectSettings from './ProjectSettings';
+import UserProfile from './UserProfile';
+import Onboarding from './Onboarding';
+import BoardCreate from './BoardCreate';
 import { ProjectPage } from './Styles';
 
 const Project = () => {
@@ -20,13 +24,17 @@ const Project = () => {
 
   const issueSearchModalHelpers = createQueryParamModalHelpers('issue-search');
   const issueCreateModalHelpers = createQueryParamModalHelpers('issue-create');
+  const boardCreateModalHelpers = createQueryParamModalHelpers('board-create');
 
   const [{ data, error, setLocalData }, fetchProject] = useApi.get('/project');
+  const [{ data: boardsData }, fetchBoards] = useApi.get('/projects');
+  const [, switchBoardApi] = useApi.post('/project/switch');
 
   if (!data) return <PageLoader />;
   if (error) return <PageError />;
 
   const { project } = data;
+  const boards = boardsData ? boardsData.projects : [];
 
   const updateLocalProjectIssues = (issueId, updatedFields) => {
     setLocalData(currentData => ({
@@ -37,6 +45,50 @@ const Project = () => {
     }));
   };
 
+  const handleSwitchBoard = async projectId => {
+    try {
+      await switchBoardApi({ projectId });
+      await fetchProject();
+      navigate('/project/board');
+    } catch (switchError) {
+      toast.error(switchError);
+    }
+  };
+
+  // Board-create modal is reachable both from the onboarding empty state and
+  // from the sidebar switcher, so render it regardless of whether a board
+  // is currently active.
+  const boardCreateModal = boardCreateModalHelpers.isOpen() && (
+    <Modal
+      isOpen
+      testid="modal:board-create"
+      width={600}
+      withCloseIcon={false}
+      onClose={boardCreateModalHelpers.close}
+      renderContent={modal => (
+        <BoardCreate
+          fetchProject={fetchProject}
+          fetchBoards={fetchBoards}
+          onCreate={() => {
+            modal.close();
+            navigate('/project/board');
+          }}
+          modalClose={modal.close}
+        />
+      )}
+    />
+  );
+
+  // Brand-new account with no active board → onboarding empty state.
+  if (!project) {
+    return (
+      <>
+        <Onboarding onCreateBoard={boardCreateModalHelpers.open} />
+        {boardCreateModal}
+      </>
+    );
+  }
+
   const isAtProjectRoot = location.pathname === '/project' || location.pathname === '/project/';
 
   return (
@@ -46,7 +98,12 @@ const Project = () => {
         issueCreateModalOpen={issueCreateModalHelpers.open}
       />
 
-      <Sidebar project={project} />
+      <Sidebar
+        project={project}
+        boards={boards}
+        onSwitchBoard={handleSwitchBoard}
+        onCreateBoard={boardCreateModalHelpers.open}
+      />
 
       {issueSearchModalHelpers.isOpen() && (
         <Modal
@@ -77,6 +134,8 @@ const Project = () => {
         />
       )}
 
+      {boardCreateModal}
+
       <Routes>
         <Route
           path="board/*"
@@ -92,6 +151,7 @@ const Project = () => {
           path="settings"
           element={<ProjectSettings project={project} fetchProject={fetchProject} />}
         />
+        <Route path="profile" element={<UserProfile />} />
       </Routes>
 
       {isAtProjectRoot && <Navigate to="/project/board" replace />}

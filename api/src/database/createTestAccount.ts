@@ -79,6 +79,14 @@ const seedComments = (issue: Issue, user: User): Promise<Comment> =>
 const createTestAccount = async (): Promise<User> => {
   const users = await seedUsers();
   const project = await seedProject(users);
+  // Membership persists via the Project.users ManyToMany cascade; set each
+  // user's active board so GET /project resolves after authentication.
+  await Promise.all(
+    users.map((user) => {
+      user.project = project;
+      return user.save();
+    }),
+  );
   const issues = await seedIssues(project);
   await seedComments(issues[0], project.users[0]);
   return users[0];

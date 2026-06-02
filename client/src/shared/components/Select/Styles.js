@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components';
 
-import { color, font, mixin, zIndexValues } from 'shared/utils/styles';
+import { color, font, mixin, radius, shadow, zIndexValues } from 'shared/utils/styles';
 import Icon from 'shared/components/Icon';
 
 export const StyledSelect = styled.div`
   position: relative;
-  border-radius: 4px;
+  border-radius: ${radius.lg};
   cursor: pointer;
   ${font.size(14)}
   ${props => props.variant === 'empty' && `display: inline-block;`}
@@ -26,7 +26,7 @@ export const StyledSelect = styled.div`
       props.variant === 'normal' &&
       css`
         border: 1px solid ${color.borderInputFocus};
-        box-shadow: 0 0 0 1px ${color.borderInputFocus};
+        box-shadow: ${shadow.focus};
         background: #fff;
       }
     `}
