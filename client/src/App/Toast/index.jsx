@@ -11,8 +11,9 @@ const Toast = () => {
   useEffect(() => {
     const addToast = ({ type = 'success', title, message, duration = 5 }) => {
       const id = uniqueId('toast-');
+      const nodeRef = React.createRef();
 
-      setToasts(currentToasts => [...currentToasts, { id, type, title, message }]);
+      setToasts(currentToasts => [...currentToasts, { id, type, title, message, nodeRef }]);
 
       if (duration) {
         setTimeout(() => removeToast(id), duration * 1000);
@@ -34,8 +35,8 @@ const Toast = () => {
     <Container>
       <TransitionGroup>
         {toasts.map(toast => (
-          <CSSTransition key={toast.id} classNames="jira-toast" timeout={200}>
-            <StyledToast key={toast.id} type={toast.type} onClick={() => removeToast(toast.id)}>
+          <CSSTransition key={toast.id} nodeRef={toast.nodeRef} classNames="jira-toast" timeout={200}>
+            <StyledToast ref={toast.nodeRef} type={toast.type} onClick={() => removeToast(toast.id)}>
               <CloseIcon type="close" />
               {toast.title && <Title>{toast.title}</Title>}
               {toast.message && <Message>{toast.message}</Message>}
