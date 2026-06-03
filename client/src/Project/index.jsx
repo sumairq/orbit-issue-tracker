@@ -10,6 +10,7 @@ import { PageLoader, PageError, Modal } from 'shared/components';
 import NavbarLeft from './NavbarLeft';
 import Sidebar from './Sidebar';
 import Board from './Board';
+import Analytics from './Analytics';
 import IssueSearch from './IssueSearch';
 import IssueCreate from './IssueCreate';
 import ProjectSettings from './ProjectSettings';
@@ -147,6 +148,7 @@ const Project = () => {
             />
           }
         />
+        <Route path="analytics" element={<Analytics />} />
         <Route
           path="settings"
           element={<ProjectSettings project={project} fetchProject={fetchProject} />}

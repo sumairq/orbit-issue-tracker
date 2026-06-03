@@ -43,6 +43,7 @@ const ProjectSidebar = ({ project, boards, onSwitchBoard, onCreateBoard }) => (
     </ProjectInfo>
 
     {renderLinkItem('Kanban Board', 'board', '/board')}
+    {renderLinkItem('Analytics', 'reports', '/analytics')}
     {renderLinkItem('Project settings', 'settings', '/settings')}
     {renderLinkItem('My Profile', 'issues', '/profile')}
 

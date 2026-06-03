@@ -69,6 +69,7 @@
     "react-router-dom": "^7.15.0",
     "react-textarea-autosize": "^8.5.9",
     "react-transition-group": "^4.4.5",
+    "recharts": "^3.8.1",
     "regenerator-runtime": "^0.14.1",
     "styled-components": "^6.4.1",
     "sweet-pubsub": "^1.1.2"
