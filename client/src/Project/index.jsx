@@ -10,6 +10,7 @@ import { PageLoader, PageError, Modal } from 'shared/components';
 import NavbarLeft from './NavbarLeft';
 import Sidebar from './Sidebar';
 import Board from './Board';
+import List from './List';
 import Analytics from './Analytics';
 import IssueSearch from './IssueSearch';
 import IssueCreate from './IssueCreate';
@@ -148,6 +149,7 @@ const Project = () => {
             />
           }
         />
+        <Route path="list" element={<List />} />
         <Route path="analytics" element={<Analytics />} />
         <Route
           path="settings"

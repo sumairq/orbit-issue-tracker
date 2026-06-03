@@ -64,27 +64,30 @@ export const priorityBreakdown = issues =>
  * bucket. Names are resolved from the project's user list.
  */
 export const assigneeBreakdown = (issues, users) => {
-  const nameById = new Map(users.map(user => [user.id, user.name]));
+  const userById = new Map(users.map(user => [user.id, user]));
+  // Keyed by String(id) | 'none' so each item carries a `filterValue` that
+  // matches the List view's assignee filter (deep-link target).
   const counts = new Map();
 
   issues.forEach(issue => {
     const ids = issue.userIds || [];
     if (ids.length === 0) {
-      counts.set('__unassigned__', (counts.get('__unassigned__') || 0) + 1);
+      counts.set('none', (counts.get('none') || 0) + 1);
       return;
     }
     ids.forEach(id => {
-      const name = nameById.get(id) || `User ${id}`;
-      counts.set(name, (counts.get(name) || 0) + 1);
+      const key = String(id);
+      counts.set(key, (counts.get(key) || 0) + 1);
     });
   });
 
   return [...counts.entries()]
     .map(([key, value]) => ({
       key,
-      label: key === '__unassigned__' ? 'Unassigned' : key,
+      label: key === 'none' ? 'Unassigned' : (userById.get(Number(key)) || { name: `User ${key}` }).name,
       value,
-      isUnassigned: key === '__unassigned__',
+      isUnassigned: key === 'none',
+      filterValue: key, // 'none' or String(userId)
     }))
     .sort((a, b) => b.value - a.value);
 };

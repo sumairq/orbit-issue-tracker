@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import useApi from 'shared/hooks/api';
+import { objectToQueryString } from 'shared/utils/url';
 import { Breadcrumbs, Icon } from 'shared/components';
 
 import { statusBreakdown, priorityBreakdown, assigneeBreakdown, createdOverTime } from './utils';
@@ -30,6 +32,8 @@ import {
 } from './Styles';
 
 const Analytics = () => {
+  const navigate = useNavigate();
+
   // Re-reads the active board. On normal navigation this resolves instantly from
   // the warm `/project` cache (already fetched by Project/index.jsx), but owning
   // the request lets the view render genuine loading/error states.
@@ -44,6 +48,9 @@ const Analytics = () => {
   const assignees = useMemo(() => assigneeBreakdown(issues, users), [issues, users]);
   const timeline = useMemo(() => createdOverTime(issues), [issues]);
 
+  // Deep-link into the List view, pre-filtered to the clicked slice.
+  const goToList = filters => navigate(`/project/list?${objectToQueryString(filters)}`);
+
   return (
     <Page>
       <Breadcrumbs items={['Projects', project ? project.name : '…', 'Analytics']} />
@@ -54,12 +61,12 @@ const Analytics = () => {
         </div>
       </PageHeader>
 
-      {renderBody({ isLoading, error, issues, status, priority, assignees, timeline })}
+      {renderBody({ isLoading, error, issues, status, priority, assignees, timeline, goToList })}
     </Page>
   );
 };
 
-const renderBody = ({ isLoading, error, issues, status, priority, assignees, timeline }) => {
+const renderBody = ({ isLoading, error, issues, status, priority, assignees, timeline, goToList }) => {
   if (isLoading) return <AnalyticsSkeleton />;
 
   if (error) {
@@ -97,14 +104,14 @@ const renderBody = ({ isLoading, error, issues, status, priority, assignees, tim
   return (
     <>
       <StatRow>
-        <StatCard>
+        <StatCard $clickable onClick={() => goToList({})}>
           <StatLabelRow>
             <StatLabel>Total issues</StatLabel>
           </StatLabelRow>
           <StatValue>{total}</StatValue>
         </StatCard>
         {status.map(item => (
-          <StatCard key={item.key}>
+          <StatCard key={item.key} $clickable onClick={() => goToList({ status: [item.key] })}>
             <StatLabelRow>
               <StatDot color={item.fill} />
               <StatLabel>{item.label}</StatLabel>
@@ -117,25 +124,28 @@ const renderBody = ({ isLoading, error, issues, status, priority, assignees, tim
       <ChartsGrid>
         <ChartCard>
           <ChartTitle>Issues by status</ChartTitle>
-          <ChartHint>Distribution across the board’s columns.</ChartHint>
+          <ChartHint>Distribution across the board’s columns. Click a slice to filter the list.</ChartHint>
           <ChartBody>
-            <StatusChart data={status} />
+            <StatusChart data={status} onSelect={item => goToList({ status: [item.key] })} />
           </ChartBody>
         </ChartCard>
 
         <ChartCard>
           <ChartTitle>Issues by priority</ChartTitle>
-          <ChartHint>How work is weighted from Lowest to Highest.</ChartHint>
+          <ChartHint>How work is weighted from Lowest to Highest. Click a bar to filter the list.</ChartHint>
           <ChartBody>
-            <PriorityChart data={priority} />
+            <PriorityChart data={priority} onSelect={item => goToList({ priority: [item.key] })} />
           </ChartBody>
         </ChartCard>
 
         <ChartCard>
           <ChartTitle>Issues by assignee</ChartTitle>
-          <ChartHint>Workload per person; unassigned issues bucketed separately.</ChartHint>
+          <ChartHint>Workload per person; unassigned issues bucketed separately. Click a bar to filter the list.</ChartHint>
           <ChartBody height={Math.max(220, assignees.length * 44)}>
-            <AssigneeChart data={assignees} />
+            <AssigneeChart
+              data={assignees}
+              onSelect={item => goToList({ assignee: [item.filterValue] })}
+            />
           </ChartBody>
         </ChartCard>
 

@@ -43,6 +43,18 @@ export const StatCard = styled.div`
   border-radius: ${radius.xl};
   box-shadow: ${shadow.sm};
   padding: 18px 20px;
+
+  ${props =>
+    props.$clickable &&
+    `
+    cursor: pointer;
+    transition: box-shadow 0.12s, border-color 0.12s, transform 0.12s;
+    &:hover {
+      border-color: ${color.borderLight};
+      box-shadow: ${shadow.md};
+      transform: translateY(-1px);
+    }
+  `}
 `;
 
 export const StatLabelRow = styled.div`

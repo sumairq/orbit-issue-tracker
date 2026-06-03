@@ -50,7 +50,7 @@ CustomTooltip.defaultProps = {
 };
 
 /* By status — donut ----------------------------------------------------- */
-export const StatusChart = ({ data }) => {
+export const StatusChart = ({ data, onSelect }) => {
   const hasData = data.some(d => d.value > 0);
   if (!hasData) return <EmptyChart>No issues to chart yet.</EmptyChart>;
 
@@ -65,6 +65,8 @@ export const StatusChart = ({ data }) => {
           outerRadius="80%"
           paddingAngle={2}
           stroke="none"
+          style={onSelect ? { cursor: 'pointer' } : undefined}
+          onClick={(_, index) => onSelect && onSelect(data[index])}
         >
           {data.map(entry => (
             <Cell key={entry.key} fill={entry.fill} />
@@ -83,7 +85,7 @@ export const StatusChart = ({ data }) => {
 };
 
 /* By priority — vertical bars ------------------------------------------- */
-export const PriorityChart = ({ data }) => {
+export const PriorityChart = ({ data, onSelect }) => {
   const hasData = data.some(d => d.value > 0);
   if (!hasData) return <EmptyChart>No issues to chart yet.</EmptyChart>;
 
@@ -94,7 +96,14 @@ export const PriorityChart = ({ data }) => {
         <XAxis dataKey="label" tick={axisTick} tickLine={false} axisLine={{ stroke: gridStroke }} />
         <YAxis allowDecimals={false} tick={axisTick} tickLine={false} axisLine={false} width={32} />
         <Tooltip cursor={{ fill: color.backgroundLight }} content={<CustomTooltip />} />
-        <Bar dataKey="value" name="Issues" radius={[6, 6, 0, 0]} maxBarSize={48}>
+        <Bar
+          dataKey="value"
+          name="Issues"
+          radius={[6, 6, 0, 0]}
+          maxBarSize={48}
+          style={onSelect ? { cursor: 'pointer' } : undefined}
+          onClick={(_, index) => onSelect && onSelect(data[index])}
+        >
           {data.map(entry => (
             <Cell key={entry.key} fill={entry.fill} />
           ))}
@@ -105,7 +114,7 @@ export const PriorityChart = ({ data }) => {
 };
 
 /* By assignee — horizontal bars ----------------------------------------- */
-export const AssigneeChart = ({ data }) => {
+export const AssigneeChart = ({ data, onSelect }) => {
   if (!data.length) return <EmptyChart>No issues to chart yet.</EmptyChart>;
 
   return (
@@ -132,7 +141,14 @@ export const AssigneeChart = ({ data }) => {
           axisLine={false}
         />
         <Tooltip cursor={{ fill: color.backgroundLight }} content={<CustomTooltip />} />
-        <Bar dataKey="value" name="Issues" radius={[0, 6, 6, 0]} maxBarSize={28}>
+        <Bar
+          dataKey="value"
+          name="Issues"
+          radius={[0, 6, 6, 0]}
+          maxBarSize={28}
+          style={onSelect ? { cursor: 'pointer' } : undefined}
+          onClick={(_, index) => onSelect && onSelect(data[index])}
+        >
           {data.map(entry => (
             <Cell key={entry.key} fill={entry.isUnassigned ? color.textLight : color.primary} />
           ))}
@@ -175,7 +191,11 @@ export const CreatedOverTimeChart = ({ data }) => {
 };
 
 const dataShape = PropTypes.arrayOf(PropTypes.object).isRequired;
-StatusChart.propTypes = { data: dataShape };
-PriorityChart.propTypes = { data: dataShape };
-AssigneeChart.propTypes = { data: dataShape };
+StatusChart.propTypes = { data: dataShape, onSelect: PropTypes.func };
+PriorityChart.propTypes = { data: dataShape, onSelect: PropTypes.func };
+AssigneeChart.propTypes = { data: dataShape, onSelect: PropTypes.func };
 CreatedOverTimeChart.propTypes = { data: dataShape };
+
+StatusChart.defaultProps = { onSelect: undefined };
+PriorityChart.defaultProps = { onSelect: undefined };
+AssigneeChart.defaultProps = { onSelect: undefined };
