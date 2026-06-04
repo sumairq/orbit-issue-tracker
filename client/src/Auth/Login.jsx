@@ -4,25 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import api from 'shared/utils/api';
 import toast from 'shared/utils/toast';
 import { storeAuthToken } from 'shared/utils/authToken';
-import Logo from 'shared/components/Logo';
+import Spinner from 'shared/components/Spinner';
 
-import {
-  Page,
-  Card,
-  LogoRow,
-  AppName,
-  Heading,
-  Subheading,
-  FieldGroup,
-  Label,
-  Input,
-  FieldError,
-  SubmitButton,
-  Divider,
-  GuestButton,
-  Footer,
-  FooterLink,
-} from './Styles';
+import AuthLayout from './AuthLayout';
+import { TextField, PasswordField } from './Fields';
+import { validateLogin } from './validate';
+import { SubmitButton } from './Styles';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,6 +25,15 @@ const Login = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    // Client-side pre-check only — gives instant inline feedback. If it passes,
+    // the exact same request fires as before (success path unchanged).
+    const clientErrors = validateLogin(form);
+    if (Object.keys(clientErrors).length) {
+      setErrors(clientErrors);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { authToken } = await api.post('/authentication/login', form);
@@ -68,61 +64,46 @@ const Login = () => {
   };
 
   return (
-    <Page>
-      <Card>
-        <LogoRow>
-          <Logo size={32} />
-          <AppName>Orbit</AppName>
-        </LogoRow>
-
-        <Heading>Welcome back</Heading>
-        <Subheading>Sign in to your account to continue.</Subheading>
-
-        <form onSubmit={handleSubmit}>
-          <FieldGroup>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={handleChange}
-              autoComplete="email"
-            />
-            {errors.email && <FieldError>{errors.email}</FieldError>}
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={handleChange}
-              autoComplete="current-password"
-            />
-            {errors.password && <FieldError>{errors.password}</FieldError>}
-          </FieldGroup>
-
-          <SubmitButton type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in…' : 'Sign In'}
-          </SubmitButton>
-        </form>
-
-        <Divider>or</Divider>
-
-        <GuestButton type="button" onClick={handleGuest} disabled={isSubmitting}>
-          Continue as Guest
-        </GuestButton>
-
-        <Footer>
-          Don&apos;t have an account? <FooterLink to="/register">Sign up</FooterLink>
-        </Footer>
-      </Card>
-    </Page>
+    <AuthLayout
+      heading="Welcome back"
+      subheading="Sign in to your Orbit workspace to continue."
+      dividerLabel="or sign in with email"
+      onGuest={handleGuest}
+      busy={isSubmitting}
+      switchPrompt="Don't have an account?"
+      switchTo="/register"
+      switchLabel="Sign up"
+    >
+      <form onSubmit={handleSubmit} noValidate>
+        <TextField
+          id="email"
+          name="email"
+          label="Email"
+          type="email"
+          placeholder="you@example.com"
+          autoComplete="email"
+          value={form.email}
+          onChange={handleChange}
+          error={errors.email}
+          disabled={isSubmitting}
+        />
+        <PasswordField
+          id="password"
+          name="password"
+          label="Password"
+          placeholder="••••••••"
+          autoComplete="current-password"
+          value={form.password}
+          onChange={handleChange}
+          error={errors.password}
+          disabled={isSubmitting}
+        />
+        <SubmitButton type="submit" disabled={isSubmitting}>
+          {isSubmitting && <Spinner size={18} color="#fff" />}
+          {isSubmitting ? 'Signing in…' : 'Sign In'}
+        </SubmitButton>
+      </form>
+    </AuthLayout>
   );
 };
 

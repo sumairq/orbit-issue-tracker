@@ -4,23 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import api from 'shared/utils/api';
 import toast from 'shared/utils/toast';
 import { storeAuthToken } from 'shared/utils/authToken';
-import Logo from 'shared/components/Logo';
+import Spinner from 'shared/components/Spinner';
 
-import {
-  Page,
-  Card,
-  LogoRow,
-  AppName,
-  Heading,
-  Subheading,
-  FieldGroup,
-  Label,
-  Input,
-  FieldError,
-  SubmitButton,
-  Footer,
-  FooterLink,
-} from './Styles';
+import AuthLayout from './AuthLayout';
+import { TextField, PasswordField } from './Fields';
+import { validateRegister } from './validate';
+import { SubmitButton } from './Styles';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -36,6 +25,15 @@ const Register = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    // Client-side pre-check only — gives instant inline feedback. If it passes,
+    // the exact same request fires as before (success path unchanged).
+    const clientErrors = validateRegister(form);
+    if (Object.keys(clientErrors).length) {
+      setErrors(clientErrors);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { authToken } = await api.post('/authentication/register', form);
@@ -52,70 +50,71 @@ const Register = () => {
     }
   };
 
+  const handleGuest = async () => {
+    setIsSubmitting(true);
+    try {
+      const { authToken } = await api.post('/authentication/guest');
+      storeAuthToken(authToken);
+      navigate('/project');
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <Page>
-      <Card>
-        <LogoRow>
-          <Logo size={32} />
-          <AppName>Orbit</AppName>
-        </LogoRow>
-
-        <Heading>Create your account</Heading>
-        <Subheading>Start managing your projects with Orbit.</Subheading>
-
-        <form onSubmit={handleSubmit}>
-          <FieldGroup>
-            <Label htmlFor="name">Full Name</Label>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Jane Smith"
-              value={form.name}
-              onChange={handleChange}
-              autoComplete="name"
-            />
-            {errors.name && <FieldError>{errors.name}</FieldError>}
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={handleChange}
-              autoComplete="email"
-            />
-            {errors.email && <FieldError>{errors.email}</FieldError>}
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="At least 8 characters"
-              value={form.password}
-              onChange={handleChange}
-              autoComplete="new-password"
-            />
-            {errors.password && <FieldError>{errors.password}</FieldError>}
-          </FieldGroup>
-
-          <SubmitButton type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating account…' : 'Create Account'}
-          </SubmitButton>
-        </form>
-
-        <Footer>
-          Already have an account? <FooterLink to="/">Sign in</FooterLink>
-        </Footer>
-      </Card>
-    </Page>
+    <AuthLayout
+      heading="Create your account"
+      subheading="Start managing your projects with Orbit."
+      dividerLabel="or sign up with email"
+      onGuest={handleGuest}
+      busy={isSubmitting}
+      switchPrompt="Already have an account?"
+      switchTo="/"
+      switchLabel="Sign in"
+    >
+      <form onSubmit={handleSubmit} noValidate>
+        <TextField
+          id="name"
+          name="name"
+          label="Full Name"
+          placeholder="Jane Smith"
+          autoComplete="name"
+          value={form.name}
+          onChange={handleChange}
+          error={errors.name}
+          disabled={isSubmitting}
+        />
+        <TextField
+          id="email"
+          name="email"
+          label="Email"
+          type="email"
+          placeholder="you@example.com"
+          autoComplete="email"
+          value={form.email}
+          onChange={handleChange}
+          error={errors.email}
+          disabled={isSubmitting}
+        />
+        <PasswordField
+          id="password"
+          name="password"
+          label="Password"
+          placeholder="At least 8 characters"
+          autoComplete="new-password"
+          value={form.password}
+          onChange={handleChange}
+          error={errors.password}
+          disabled={isSubmitting}
+        />
+        <SubmitButton type="submit" disabled={isSubmitting}>
+          {isSubmitting && <Spinner size={18} color="#fff" />}
+          {isSubmitting ? 'Creating account…' : 'Create Account'}
+        </SubmitButton>
+      </form>
+    </AuthLayout>
   );
 };
 
