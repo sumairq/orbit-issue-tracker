@@ -28,11 +28,21 @@ const ensureDatabaseConnection = (): Promise<unknown> => {
 const createApp = (): Express => {
   const app = express();
 
-  app.use(cors({
-    origin: 'https://orbitclient-sepia.vercel.app/',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  }));
+  // Browser Origin headers never have a trailing slash or path, so the allowed
+  // origins must not either. Configurable via CLIENT_ORIGIN (comma-separated).
+  const allowedOrigins = (
+    process.env.CLIENT_ORIGIN || 'https://orbitclient-sepia.vercel.app'
+  )
+    .split(',')
+    .map(origin => origin.trim().replace(/\/+$/, ''));
+
+  app.use(
+    cors({
+      origin: allowedOrigins,
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+    }),
+  );
   app.use(express.json());
   app.use(express.urlencoded());
 
