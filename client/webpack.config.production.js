@@ -53,7 +53,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production'),
-      'process.env.API_URL': JSON.stringify('http://api.sumair.ml:3000'),
+      'process.env.API_URL': JSON.stringify(
+        process.env.API_URL || 'https://orbitapi-eta.vercel.app',
+      ),
     }),
     new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
   ],
