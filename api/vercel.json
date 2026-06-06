@@ -1,17 +1,18 @@
 {
   "version": 2,
+  "framework": null,
   "installCommand": "npm install --legacy-peer-deps",
   "buildCommand": "npm run build",
-  "builds": [
-    {
-      "src": "build/index.js",
-      "use": "@vercel/node"
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "ca-certificate.crt"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "build/index.js"
+      "source": "/(.*)",
+      "destination": "/api"
     }
   ]
 }
