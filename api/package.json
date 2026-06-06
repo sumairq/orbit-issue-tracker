@@ -9,6 +9,7 @@
     "start:test": "cross-env NODE_ENV='test' DB_DATABASE='jira_test' npm start",
     "start:production": "pm2 start --name 'jira_api' node -- -r ./tsconfig-paths.js build/index.js",
     "build": "tsc && tsc-alias",
+    "vercel-build": "npm run build",
     "pre-commit": "lint-staged"
   },
   "dependencies": {

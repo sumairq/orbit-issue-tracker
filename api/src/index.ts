@@ -1,7 +1,7 @@
 import 'module-alias/register';
 import 'dotenv/config';
 import 'reflect-metadata';
-import express from 'express';
+import express, { Express } from 'express';
 import cors from 'cors';
 
 import createDatabaseConnection from 'database/createConnection';
@@ -12,15 +12,21 @@ import { RouteNotFoundError } from 'errors';
 
 import { attachPublicRoutes, attachPrivateRoutes } from './routes';
 
-const establishDatabaseConnection = async (): Promise<void> => {
-  try {
-    await createDatabaseConnection();
-  } catch (error) {
-    console.log('HI this is the error', error);
+// Cache the connection across warm serverless invocations so we only
+// initialize a single DataSource per container.
+let connectionPromise: Promise<unknown> | null = null;
+const ensureDatabaseConnection = (): Promise<unknown> => {
+  if (!connectionPromise) {
+    connectionPromise = createDatabaseConnection().catch(error => {
+      // Reset so the next request can retry instead of caching the failure.
+      connectionPromise = null;
+      throw error;
+    });
   }
+  return connectionPromise;
 };
 
-const initializeExpress = (): void => {
+const createApp = (): Express => {
   const app = express();
 
   app.use(cors());
@@ -28,6 +34,10 @@ const initializeExpress = (): void => {
   app.use(express.urlencoded());
 
   app.use(addRespondToResponse);
+
+  app.use((_req, _res, next) => {
+    ensureDatabaseConnection().then(() => next(), next);
+  });
 
   attachPublicRoutes(app);
 
@@ -38,14 +48,18 @@ const initializeExpress = (): void => {
   app.use((req, _res, next) => next(new RouteNotFoundError(req.originalUrl)));
   app.use(handleError);
 
-  app.listen(process.env.PORT || 3000, () => {
-    console.log('Server start');
+  return app;
+};
+
+const app = createApp();
+
+// On Vercel (and other serverless platforms) the function must export the
+// Express app; the platform handles incoming requests. Locally we listen.
+if (!process.env.VERCEL) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Server start on port ${port}`);
   });
-};
+}
 
-const initializeApp = async (): Promise<void> => {
-  await establishDatabaseConnection();
-  initializeExpress();
-};
-
-initializeApp();
+export default app;
