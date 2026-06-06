@@ -8,7 +8,7 @@
     "start": "nodemon --exec ts-node --files src/index.ts",
     "start:test": "cross-env NODE_ENV='test' DB_DATABASE='jira_test' npm start",
     "start:production": "pm2 start --name 'jira_api' node -- -r ./tsconfig-paths.js build/index.js",
-    "build": "cd src && tsc",
+    "build": "cd src && tsc && tsc-alias",
     "pre-commit": "lint-staged"
   },
   "dependencies": {
@@ -48,6 +48,7 @@
     "nodemon": "^3.1.14",
     "prettier": "^3.8.3",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.17",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^6.0.3"
   },
